@@ -19,6 +19,7 @@
   "devDependencies": {
     "@babel/cli": "^7.12.17",
     "@babel/core": "^7.12.17",
+    "@babel/plugin-proposal-partial-application": "^7.12.13",
     "@babel/preset-env": "^7.12.17",
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-commonjs": "^17.1.0",
@@ -33,6 +34,10 @@
   },
   "dependencies": {
     "date-fns": "^2.17.0",
-    "leaflet": "^1.7.1"
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "leaflet": "^1.7.1",
+    "node-fetch": "^2.6.1",
+    "redis": "^3.0.2"
   }
 }
