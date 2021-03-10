@@ -1,6 +1,8 @@
 import express from 'express';
 import fetch from 'node-fetch';
 import { timerStart, timerEnd } from './time.js';
+import { getFromCache, writeToCache } from './cache.js';
+
 export const router = express.Router();
 
 const returnEarthquake = async (type, period) => {
@@ -12,19 +14,30 @@ const returnEarthquake = async (type, period) => {
 router.get('/', async (req, res) => {
   const start = timerStart();
   const { period, type } = req.query;
+  const key = `${period}:${type}`;
+  const cachedData = await getFromCache(key);
+  if (cachedData) {
+    const cData = JSON.parse(cachedData);
+    cData.info = {
+      elapsed: timerEnd(start),
+      cached: true,
+    };
+    res.json(cData);
+    return;
+  }
   returnEarthquake(type, period).then((resp) => {
     if (resp.status !== 200) {
       res.json({ error: 'Unable to connect to server' });
     }
     return resp.json();
-  }).then((data) => {
-    const end = timerEnd(start);
+  }).then(async (data) => {
     const newdata = data;
     newdata.info = {
-      elapsed: end,
+      elapsed: timerEnd(start),
       cached: false,
     };
-
+    const JsonData = JSON.stringify(newdata);
+    await writeToCache(key, JsonData);
     res.json(newdata);
   });
 });
