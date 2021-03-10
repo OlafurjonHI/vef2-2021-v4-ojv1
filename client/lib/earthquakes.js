@@ -14,6 +14,5 @@ export async function fetchEarthquakes(type = 'significant', period = 'week') {
   }
 
   const data = await result.json();
-  console.log(data)
   return data;
 }

@@ -30,7 +30,7 @@ app.set('view engine', 'html');
  */
 // eslint-disable-next-line no-unused-vars
 function notFoundHandler(req, res, next) {
-  res.status(404).send('Síðða fannst ekki');
+  res.status(404).send('Síða fannst ekki');
   next();
 }
 
@@ -48,17 +48,18 @@ function errorHandler(err, req, res, next) {
   res.status(500).send('Villa kom upp');
   next();
 }
-
-//app.use(notFoundHandler);
-app.use(errorHandler);
 const index = (req, res) => {
   const indexUrl = join(path, '../index.html');
   res.sendFile(indexUrl);
-}
+};
 app.get('/', index);
+
+
 
 app.use('/api', proxyRouter);
 // Verðum að setja bara *port* svo virki á heroku
+app.use(notFoundHandler);
+app.use(errorHandler);
 app.listen(port, () => {
   console.info(`Server running at http://localhost:${port}/`);
 });

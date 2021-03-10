@@ -5,6 +5,7 @@ import { init, createPopup, clearMarkers } from './lib/map';
 const createLoader = () => {
   if (!document.querySelector('.loading')) {
     document.querySelector('.title').textContent = '';
+    document.querySelector('.cache').textContent = '';
     const ul = document.querySelector('.earthquakes');
     while (ul.firstChild) {
       ul.removeChild(ul.firstChild);
@@ -23,9 +24,13 @@ const updateMap = async (period, type) => {
 
   // Fjarlægjum loading skilaboð eftir að við höfum sótt gögn
   const loading = document.querySelector('.loading');
-  const parent = loading.parentNode;
-  parent.removeChild(loading);
-
+  if (loading) {
+    const parent = loading.parentNode;
+    parent.removeChild(loading);
+  }
+  const { elapsed, cached } = earthquakes.info;
+  const cachedText = (!cached) ? 'Gögn eru ekki í cache.' : 'Gögn eru í cache';
+  document.querySelector('.cache').textContent = `${cachedText} Fyrirspurnin tók ${elapsed} sek.`;
   if (!earthquakes) {
     parent.appendChild(
       el('p', 'Villa við að sækja gögn'),
@@ -88,11 +93,6 @@ const earthQuakeClickHandler = async (e) => {
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // TODO
-  // Bæta við virkni til að sækja úr lista
-  // Nota proxy
-  // Hreinsa header og upplýsingar þegar ný gögn eru sótt
-  // Sterkur leikur að refactora úr virkni fyrir event handler í sér fall
   const eartquakesLinks = document.querySelectorAll('.earthquakeLink');
   eartquakesLinks.forEach((b) => b.addEventListener('click', earthQuakeClickHandler));
   const map = document.querySelector('.map');

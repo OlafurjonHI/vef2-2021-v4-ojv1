@@ -1,6 +1,6 @@
 import express from 'express';
 import fetch from 'node-fetch';
-
+import { timerStart, timerEnd } from './time.js';
 export const router = express.Router();
 
 const returnEarthquake = async (type, period) => {
@@ -10,6 +10,7 @@ const returnEarthquake = async (type, period) => {
 };
 
 router.get('/', async (req, res) => {
+  const start = timerStart();
   const { period, type } = req.query;
   returnEarthquake(type, period).then((resp) => {
     if (resp.status !== 200) {
@@ -17,6 +18,13 @@ router.get('/', async (req, res) => {
     }
     return resp.json();
   }).then((data) => {
-    res.json(data);
+    const end = timerEnd(start);
+    const newdata = data;
+    newdata.info = {
+      elapsed: end,
+      cached: false,
+    };
+
+    res.json(newdata);
   });
 });
