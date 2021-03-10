@@ -24,14 +24,15 @@ const updateMap = async (period, type) => {
 
   // Fjarlægjum loading skilaboð eftir að við höfum sótt gögn
   const loading = document.querySelector('.loading');
+  let parent = null;
   if (loading) {
-    const parent = loading.parentNode;
+    parent = loading.parentNode;
     parent.removeChild(loading);
   }
   const { elapsed, cached } = earthquakes.info;
   const cachedText = (!cached) ? 'Gögn eru ekki í cache.' : 'Gögn eru í cache';
   document.querySelector('.cache').textContent = `${cachedText} Fyrirspurnin tók ${elapsed} sek.`;
-  if (!earthquakes) {
+  if (parent && !earthquakes) {
     parent.appendChild(
       el('p', 'Villa við að sækja gögn'),
     );
